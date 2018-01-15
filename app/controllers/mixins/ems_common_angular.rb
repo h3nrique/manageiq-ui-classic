@@ -208,6 +208,11 @@ module Mixins
         service_account_auth_status = @ems.authentication_status_ok?
       end
 
+      if @ems.kind_of?(ManageIQ::Providers::OracleCloud::CloudManager)
+        oracle_cloud_domain = @ems.oracle_cloud_domain
+        oracle_compute_api  = @ems.oracle_compute_api
+      end
+
       render :json => {:name                            => @ems.name,
                        :emstype                         => @ems.emstype,
                        :zone                            => zone,
@@ -237,7 +242,9 @@ module Mixins
                        :ems_controller                  => controller_name,
                        :default_auth_status             => default_auth_status,
                        :amqp_auth_status                => amqp_auth_status,
-                       :service_account_auth_status     => service_account_auth_status
+                       :service_account_auth_status     => service_account_auth_status,
+                       :oracle_cloud_domain             => oracle_cloud_domain ? oracle_cloud_domain : "",
+                       :oracle_compute_api              => oracle_compute_api ? oracle_compute_api : ""
       } if controller_name == "ems_cloud" || controller_name == "ems_network"
 
       render :json => { :name                          => @ems.name,

@@ -1319,6 +1319,8 @@ module ApplicationController::CiProcessing
     @client_key = ""
     @azure_tenant_id = ""
     @subscription = ""
+    @oracle_cloud_domain = ""
+    @oracle_compute_api = ""
     if session[:type] == "hosts"
       @discover_type = Host.host_discovery_types
     elsif session[:type] == "ems"
@@ -1374,6 +1376,17 @@ module ApplicationController::CiProcessing
 
         if @client_id == "" || @client_key == "" || @azure_tenant_id == "" || @subscription == ""
           add_flash(_("Client ID, Client Key, Azure Tenant ID and Subscription ID are required"), :error)
+          render :action => 'discover'
+          return
+        end
+      elsif request.parameters[:controller] == "ems_cloud" && params[:discover_type_selected] == 'oracle_cloud'
+        @userid = params[:userid] if  params[:userid]
+        @password = params[:password] if params[:password]
+        @oracle_cloud_domain = params[:oracle_cloud_domain] if params[:oracle_cloud_domain]
+        @oracle_compute_api = params[:oracle_compute_api] if params[:oracle_compute_api]
+
+        if @userid == "" || @password == "" || @oracle_cloud_domain == "" || @oracle_compute_api == ""
+          add_flash(_("Domain, Compute API URL, Username and Password are required"), :error)
           render :action => 'discover'
           return
         end
